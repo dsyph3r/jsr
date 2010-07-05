@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd" >
+<html lang="en">
+<head>
+  <title>jsr - JavaScript Renderer</title>
+  
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="js/Log.js"></script>
+  <script type="text/javascript" src="js/Util.js"></script>
+  
+  <script type="text/javascript" src="js/Vector3.js"></script>
+  <script type="text/javascript" src="js/Vector4.js"></script>
+  <script type="text/javascript" src="js/Matrix.js"></script>
+  <script type="text/javascript" src="js/Color.js"></script>
+  <script type="text/javascript" src="js/Material.js"></script>
+  <script type="text/javascript" src="js/Triangle.js"></script>
+  <script type="text/javascript" src="js/Mesh.js"></script>
+  <script type="text/javascript" src="js/Renderer.js"></script>
+  <script type="text/javascript">
+  
+    function init() {
+      
+        
+      var mesh = new Mesh();
+      mesh.loadMesh("cube_low.txt");
+    
+      var canvas = document.getElementById('canvas');
+      var renderer = new Renderer(canvas);
+    
+      renderer.setMesh(mesh);
+
+      var M          = new Matrix();
+      var rotateX    = new Matrix();
+      var rotateY    = new Matrix();
+      var rotateZ    = new Matrix();
+      var scale      = new Matrix();
+      var translate  = new Matrix();
+      var projection = new Matrix();
+      
+      
+     scale.scale(0.5, 0.5, 0.5);
+ 
+      // Convert degrees to radians
+      rotateX.MatrixRotationX((0 * 0.0174532925));
+     rotateY.MatrixRotationY((90 * 0.0174532925));
+     rotateZ.MatrixRotationZ((0 * 0.0174532925));
+      
+      // Why does y need to be multiplied by -1 so that +ve y becomes up??
+      translate.translation(50, -200 * -1, 2);
+                               
+      /*
+       * Matrix multiplication order
+       *      1 - Scale
+       *      2 - Rotation
+       *      3 - Translation
+       */
+      M = Matrix.MatrixMultiply(M, scale);
+      //M = Matrix.MatrixMultiply(M, rotateX);
+      //M = Matrix.MatrixMultiply(M, rotateY);
+     // M = Matrix.MatrixMultiply(M, rotateZ);
+      M = Matrix.MatrixMultiply(M, translate);
+                    
+      // Transform the mes
+      renderer.transformMesh(M);
+        
+        
+        
+      //renderer.transformMesh(mat);
+      renderer.renderMesh(new Vector3());
+      
+      //drawShape();
+      
+    }
+    
+    function drawShape(){
+      Log.output("hello world");
+      
+      // get the canvas element using the DOM
+      var canvas = document.getElementById('canvas');
+
+      // Make sure we don't execute when canvas isn't supported
+      if (canvas.getContext){
+
+        // use getContext to use the canvas for drawing
+        var ctx = canvas.getContext('2d');
+
+        // Filled triangle
+        ctx.beginPath();
+        ctx.moveTo(25,25);
+        ctx.lineTo(105,25);
+        ctx.lineTo(25,105);
+        ctx.fill();
+        
+        // Stroked triangle
+        ctx.beginPath();
+        ctx.moveTo(125,125);
+        ctx.lineTo(125,45);
+        ctx.lineTo(45,125);
+        ctx.closePath();
+        ctx.stroke();
+
+      } else {
+        alert('You need Safari or Firefox 1.5+ to see this demo.');
+      }
+    }
+  </script>
+  <style type="text/css">
+    body { margin: 20px; font-family: arial,verdana,helvetica; background: #fff;}
+    h1 { font-size: 140%; font-weight:normal; color: #036; border-bottom: 1px solid #ccc; }
+    canvas { border: 2px solid #000; float: left; margin-right: 20px; margin-bottom: 20px; }
+    pre { float:left; display:block; background: rgb(238,238,238); border: 1px dashed #666; padding: 15px 20px; margin: 0 0 10px 0; }
+  </style>
+
+
+</head>
+<body onload="init();">
+  
+  <canvas id="canvas" width="400" height="400"></canvas>
+
+
+</body>
+</html>
